@@ -4,7 +4,8 @@ from tkinter import *
 from typing import List
 
 from .scene import AbstractScene
-from ..popup import show_popup
+from ..elements.popup import show_popup
+from solver.graph import draw_graph
 
 class MatrixScene(AbstractScene):
     solve_button: tk.Button
@@ -17,29 +18,30 @@ class MatrixScene(AbstractScene):
         self.width = width
         self.height = height
 
-    def button_callback(self):
-        width = int(self.width_entry.get())
-        height = int(self.height_entry.get())
-        print(width, height)
+    # def button_callback(self):
+    #     width = int(self.width_entry.get())
+    #     height = int(self.height_entry.get())
+    #     print(width, height)
 
     def button_callback(self):
         if not self.validate_matrix():
             return
         # Вывести значения матрицы
-        matrix_values = [[entry.get() for entry in row] for row in self.matrix_entries]
-        for row in matrix_values:
-            print(row)
+        matrix_values = [[float(entry.get()) for entry in row] for row in self.matrix_entries]
+        draw_graph(matrix_values, player=1)
+        draw_graph(matrix_values, player=2)
 
     def validate_matrix(self):
         matrix_values = [[entry.get() for entry in row] for row in self.matrix_entries]
         for row in matrix_values:
             for value in row:
-                if not value.isnumeric():
+                try:
+                    float(value)
+                except Exception as e:
                     show_popup('Неправильный ввод', 'Все значения должны быть числами')
                     return False
         return True
                     
-
     def on_key(self, event):
         if event.keysym == 'Return':
             
@@ -95,7 +97,7 @@ class MatrixScene(AbstractScene):
         for i in range(self.height):
             row_entries = []
             for j in range(self.width):
-                entry = tk.Entry(matrix_frame, width=6)
+                entry = tk.Entry(matrix_frame, width=9, justify='center')
                 entry.grid(row=i+1, column=j, padx=2, pady=2)
                 entry.bind('<KeyPress>', self.on_key)
                 row_entries.append(entry)

@@ -2,7 +2,7 @@ import tkinter as tk
 
 from .scene import AbstractScene
 from .matrix_scene import MatrixScene
-from ..popup import show_popup
+from ..elements.popup import show_popup
 
 class SizeEnterScene(AbstractScene):
     width_entry: tk.Entry
@@ -24,8 +24,7 @@ class SizeEnterScene(AbstractScene):
             return False
         width = int(width)
         height = int(height)
-        if not 2 <= width < 10 or not 2 <= height <= 10:
-            print('Invalid height or width: 2 <= size <= 10')
+        if not width == 2 and not height == 2 or width > 10 or height > 10: 
             show_popup('Неправильный ввод', 'Высота и ширина должны быть в пределах от 2 до 10')
             return False
         return True
